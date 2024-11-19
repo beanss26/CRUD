@@ -2,6 +2,7 @@ import dayjs from "dayjs";
 import { Button } from "@/shadcn/ui/button";
 import { Label } from "@/shadcn/ui/label";
 
+// Modify the title for the dialog or any section displaying the product info
 const Show = ({ model, onDialogConfig }) => {
     return (
         <>

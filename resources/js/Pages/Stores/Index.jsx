@@ -10,6 +10,7 @@ import CreateStore from "./Create";
 import Update from "./Update";
 import Show from "./Show";
 import Delete from "./Delete";
+import Buy from './Buy';
 import dayjs from "dayjs";
 import { Head, router, usePage } from "@inertiajs/react";
 import { useEffect, useState } from "react";
@@ -138,7 +139,7 @@ export default function Index({ auth, model, queryParams = null }) {
                                     )}
                                 </div>
 
-                                <CreateStore resourceName={resourceName} />
+                                <CreateStore resourceName={resourceName} buttonLabel="Create Product" />
                             </div>
 
                             <div className="rounded shadow">
@@ -224,7 +225,7 @@ export default function Index({ auth, model, queryParams = null }) {
 
                                                 {/* prettier-ignore */}
                                                 <td className="border-b border-slate-100 dark:border-slate-700 p-4 text-slate-500 dark:text-slate-400">
-                                                    {dayjs(item.createdAt).format("MMMM D, YYYY")}
+                                                    {dayjs(item.created_at).format("MMMM D, YYYY")}
                                                 </td>
 
                                                 <td className="border-b border-slate-100 dark:border-slate-700 p-4 text-slate-500 dark:text-slate-400">
@@ -264,23 +265,39 @@ export default function Index({ auth, model, queryParams = null }) {
                                                         </div>
 
                                                         {/* Delete */}
-<div className="text-center cursor-pointer hover:bg-slate-400 hover:text-black hover:rounded-xl p-1">
-    <div
-        className="text-[7px]"
-        onClick={() => {
-            console.log("Delete clicked for item:", item);  // Debugging: Log the item being deleted
-            setDialogConfig({
-                open: true,
-                process: "delete",  // Set process to "delete" instead of "update"
-                data: item,         // Pass the item to the dialog for deletion
-            });
-        }}
-    >
-        <Trash2 className="border rounded-full px-1 text-red-600 border-red-600" />
-        Delete
-    </div>
-</div>
+                                                        <div className="text-center cursor-pointer hover:bg-slate-400 hover:text-black hover:rounded-xl p-1">
+                                                            <div
+                                                                className="text-[7px]"
+                                                                onClick={() => {
+                                                                    console.log("Delete clicked for item:", item);  // Debugging: Log the item being deleted
+                                                                    setDialogConfig({
+                                                                        open: true,
+                                                                        process: "delete",  // Set process to "delete" instead of "update"
+                                                                        data: item,         // Pass the item to the dialog for deletion
+                                                                    });
+                                                                }}
+                                                            >
+                                                                <Trash2 className="border rounded-full px-1 text-red-600 border-red-600" />
+                                                                Delete
+                                                            </div>
+                                                        </div>
 
+                                                            {/* Buy */}
+                                                            <div className="text-center cursor-pointer hover:bg-slate-400 hover:text-black hover:rounded-xl p-1">
+                                                                <div
+                                                                    className="text-[7px]"
+                                                                    onClick={() => {
+                                                                        setDialogConfig({
+                                                                            open: true,
+                                                                            process: "buy",
+                                                                            data: item,
+                                                                        });
+                                                                    }}
+                                                                >
+                                                                    <Pencil className="border rounded-full px-1 text-purple-600 border-purple-600" />
+                                                                    Buy
+                                                                </div>
+                                                            </div>
                                                     </div>
                                                 </td>
                                             </tr>
@@ -304,7 +321,13 @@ export default function Index({ auth, model, queryParams = null }) {
                     <DialogContent className="sm:max-w-[600px] dark:bg-gray-800 text-gray-900 dark:text-gray-100 dark:border-none">
                         <DialogHeader>
                             <DialogTitle>
-                                {titleCase(dialogConfig.process + " " + resourceName)}
+                                {titleCase(
+                                    dialogConfig.process === "view" ? "View Product" :
+                                    dialogConfig.process === "update" ? "Update Product" :
+                                    dialogConfig.process === "delete" ? "Delete Product" :
+                                    dialogConfig.process === "buy" ? "Buy Product" :
+                                    dialogConfig.process + " " + resourceName
+                                )}
                             </DialogTitle>
                         </DialogHeader>
 
@@ -325,12 +348,19 @@ export default function Index({ auth, model, queryParams = null }) {
                             />
                         )}
 
-{dialogConfig.process === "delete" && (
-    <Delete
-        model={dialogConfig.data}
-        onDialogConfig={onDialogConfig}
-    />
-)}
+                        {dialogConfig.process === "delete" && (
+                            <Delete
+                                model={dialogConfig.data}
+                                onDialogConfig={onDialogConfig}
+                            />
+                        )}
+
+                        {dialogConfig.process === "buy" && (
+                            <Buy
+                                model={dialogConfig.data}
+                                onDialogConfig={onDialogConfig}
+                            />
+                        )}
 
                     </DialogContent>
                 </Dialog>

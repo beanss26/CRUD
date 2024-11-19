@@ -28,6 +28,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::patch('/stores/{store}', [StoreController::class, 'update'])->name('stores.update');
     Route::delete('/stores/{store}', [StoreController::class, 'destroy'])->name('stores.destroy');
+    Route::post('stores/{store}', [StoreController::class, 'buy'])->name('stores.buy');
 
     Route::post('/region', [AddResourceController::class, 'addRegion'])->name('add.region');
     Route::post('/province', [AddResourceController::class, 'addProvince'])->name('add.province');

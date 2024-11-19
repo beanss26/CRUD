@@ -78,28 +78,28 @@ class StoreController extends Controller
      * Update the specified resource in storage.
      */
     public function update(Request $request, $product_id)
-{
-    // Find the store by product_id
-    $store = Store::find($product_id);
+    {
+        // Find the store by product_id
+        $store = Store::find($product_id);
 
-    // Check if the store exists
-    if (!$store) {
-        return response()->json(['error' => 'Store not found'], 404);
+        // Check if the store exists
+        if (!$store) {
+            return response()->json(['error' => 'Store not found'], 404);
+        }
+
+        // Update the store with new data
+        $store->update([
+            'product_name' => $request->product_name,
+            'product_quantity' => $request->product_quantity,
+            'product_price' => $request->product_price,
+        ]);
+
+        // Flash success message to the session
+        session()->flash('message', 'Successfully updated the product');
+
+        // Redirect or return a response
+        return redirect(route('stores.index'));
     }
-
-    // Update the store with new data
-    $store->update([
-        'product_name' => $request->product_name,
-        'product_quantity' => $request->product_quantity,
-        'product_price' => $request->product_price,
-    ]);
-
-    // Flash success message to the session
-    session()->flash('message', 'Successfully updated the product');
-
-    // Redirect or return a response
-    return redirect(route('stores.index'));
-}
 
 
     /**
@@ -112,5 +112,27 @@ class StoreController extends Controller
         session()->flash('message', 'Successfully deleted the product');
 
         return redirect(route('stores.index'));
+    }
+
+    public function buy(Request $request, Store $store)
+    {
+        $request->validate([
+            'quantity' => 'required|integer|min:1',
+        ]);
+
+        $quantity = $request->input('quantity');
+
+        if ($quantity > $store->product_quantity) {
+            return redirect()->back()->withErrors([
+                'quantity' => 'Requested quantity exceeds available stock.'
+            ]);
+        }
+
+        $store->product_quantity -= $quantity;
+        $store->save();
+
+        session()->flash('message', "Successfully purchased {$quantity} {$store->product_name}(s).");
+
+        return redirect()->route('stores.index');
     }
 }

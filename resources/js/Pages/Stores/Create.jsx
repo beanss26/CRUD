@@ -1,8 +1,3 @@
-/**
- * teachasgreywolf
- * May 17, 2024
- */
-
 import { useForm, usePage } from "@inertiajs/react";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
@@ -24,7 +19,7 @@ import { Input } from "@/shadcn/ui/input";
 import { Textarea } from "@/shadcn/ui/textarea";
 import { Label } from "@/shadcn/ui/label";
 
-const CreateStore = ({ resourceName }) => {
+const CreateStore = ({ resourceName, buttonLabel = `Create ${titleCase(resourceName)}` }) => {
     const { auth } = usePage().props;
     const [open, setOpen] = useState(false);
     const { data, setData, post, processing, reset, errors } = useForm({
@@ -49,7 +44,7 @@ const CreateStore = ({ resourceName }) => {
         <Dialog className="bg-slate-400" open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
                 <Button className="bg-blue-600 rounded-full hover:bg-blue-500 px-10">
-                    Create {titleCase(resourceName)}
+                    {buttonLabel}
                 </Button>
             </DialogTrigger>
 
@@ -57,7 +52,7 @@ const CreateStore = ({ resourceName }) => {
                 <form onSubmit={submit}>
                     <DialogHeader>
                         <DialogTitle>
-                            Create {titleCase(resourceName)}
+                            Create Product
                         </DialogTitle>
                     </DialogHeader>
 
@@ -126,19 +121,6 @@ const CreateStore = ({ resourceName }) => {
                             <InputError
                                 message={errors.product_price}
                                 className="mt-2"
-                            />
-                        </div>
-
-                        {/* Product Description (Optional) */}
-                        <div className="">
-                            <Label htmlFor="description">Description</Label>
-
-                            <Textarea
-                                value={data.description}
-                                onChange={(e) =>
-                                    setData("description", e.target.value)
-                                }
-                                className="mt-1 block w-full py-[0.5rem] px-[.75rem] border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 rounded-md shadow-sm"
                             />
                         </div>
                     </div>
